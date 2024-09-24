@@ -1,52 +1,67 @@
-import React from 'react';
-
-
-const Hello = () => {
-  return (
-    <div>
-      <p>Hello world</p>
-    </div>
-  );
-};
-
-
-const HelloWorldWithLogic = () => {
-  const now = new Date();
-  const a = 10;
-  const b = 20;
-
-  console.log(now, a + b);
-
-  return (
-    <div>
-      <p>Hello world, it is {now.toString()}</p>
-      <p>
-        {a} plus {b} is {a + b}
-      </p>
-    </div>
-  );
-};
-
+import React, { useState, useEffect } from 'react';
+import Hello from './components/Hello';
+import HelloWorldWithLogic from './components/HelloWorldWithLogic';
+import Friend from './components/Friend';
 
 const App = () => {
-  const friends = [
-    { name: 'Leevi', age: 4 },
-    { name: 'Venla', age: 10 },
-  ];
+  // Tilan määrittely ystäville
+  const [friends, setFriends] = useState([
+    { name: 'Leevi', age: 1 },
+    { name: 'Venla', age: 1 },
+  ]);
+
+  // Tilan määrittely laskurille
+  const [counter, setCounter] = useState(0);
+
+  // Laskurin päivittäminen joka sekunti
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCounter((prevCounter) => prevCounter + 1); // Kasvatetaan laskuria yhdellä
+    }, 1000);
+
+    // Puhdistetaan intervalli, kun komponentti tuhoutuu tai efekti suoritetaan uudelleen
+    return () => clearInterval(interval);
+  }, []); // Tyhjä riippuvuuslista tarkoittaa, että efekti suoritetaan vain kerran
+
+  // Tapahtumankäsittelijä, joka kasvattaa ystävän ikää
+  const increaseAge = (index) => {
+    setFriends(prevFriends => {
+      const updatedFriends = [...prevFriends];
+      updatedFriends[index].age += 1;
+      return updatedFriends;
+    });
+  };
+
+  // Tapahtumankäsittelijä, joka nollaa ystävän iän
+  const resetAge = (index) => {
+    setFriends(prevFriends => {
+      const updatedFriends = [...prevFriends];
+      updatedFriends[index].age = 0;
+      return updatedFriends;
+    });
+  };
 
   return (
     <div>
       <h1>Greetings</h1>
-      
-    
+
+      {/* Näytetään laskuri */}
+      <p>Counter: {counter}</p>
+
+      {/* Hello-komponentin käyttö */}
       <Hello />
 
-   
+      {/* HelloWorldWithLogic-komponentin käyttö */}
       <HelloWorldWithLogic />
 
-
-      <p>{friends[0].name} {friends[0].age}</p>
-      <p>{friends[1].name} {friends[1].age}</p>
+      {/* Friend-komponenttien käyttö, jossa tapahtumankäsittelijät */}
+      {friends.map((friend, index) => (
+        <div key={friend.name}>
+          <Friend name={friend.name} age={friend.age} />
+          <button onClick={() => increaseAge(index)}>Increase {friend.name}'s age</button>
+          <button onClick={() => resetAge(index)}>Reset {friend.name}'s age</button>
+        </div>
+      ))}
     </div>
   );
 };
