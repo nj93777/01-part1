@@ -1,16 +1,16 @@
 import React from 'react';
 
-const Hello = (props) => {
+const Hello = ({ name, age }) => {
   // Apufunktio syntymävuoden laskemiseksi
   const bornYear = () => {
     const yearNow = new Date().getFullYear();
-    return yearNow - props.age;
+    return yearNow - age;
   };
 
   return (
     <div>
       <p>
-        Hello {props.name}, you are {props.age} years old
+        Hello {name}, you are {age} years old
       </p>
       <p>
         So you were probably born in {bornYear()}

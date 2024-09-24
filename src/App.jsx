@@ -13,7 +13,7 @@ const App = () => {
   // Tilan määrittely laskurille
   const [counter, setCounter] = useState(0);
 
-  // Laskurin päivittäminen joka sekunti
+  // Laskurin päivittäminen joka sekunti (laskuri on erillinen iän päivityksestä)
   useEffect(() => {
     const interval = setInterval(() => {
       setCounter((prevCounter) => prevCounter + 1); // Kasvatetaan laskuria yhdellä
@@ -23,11 +23,11 @@ const App = () => {
     return () => clearInterval(interval);
   }, []); // Tyhjä riippuvuuslista tarkoittaa, että efekti suoritetaan vain kerran
 
-  // Tapahtumankäsittelijä, joka kasvattaa ystävän ikää
-  const increaseAge = (index) => {
+  // Tapahtumankäsittelijä, joka kasvattaa ystävän ikää manuaalisesti
+  const increaseAgeManually = (index) => {
     setFriends(prevFriends => {
       const updatedFriends = [...prevFriends];
-      updatedFriends[index].age += 1;
+      updatedFriends[index].age += 1; // Kasvatetaan ystävän ikää yhdellä
       return updatedFriends;
     });
   };
@@ -36,7 +36,7 @@ const App = () => {
   const resetAge = (index) => {
     setFriends(prevFriends => {
       const updatedFriends = [...prevFriends];
-      updatedFriends[index].age = 0;
+      updatedFriends[index].age = 0; // Nollataan ystävän ikä
       return updatedFriends;
     });
   };
@@ -48,8 +48,11 @@ const App = () => {
       {/* Näytetään laskuri */}
       <p>Counter: {counter}</p>
 
-      {/* Hello-komponentin käyttö */}
-      <Hello />
+      {/* Hello-komponentin käyttö Leeville */}
+      <Hello name={friends[0].name} age={friends[0].age} />
+
+      {/* Hello-komponentin käyttö Venlalle */}
+      <Hello name={friends[1].name} age={friends[1].age} />
 
       {/* HelloWorldWithLogic-komponentin käyttö */}
       <HelloWorldWithLogic />
@@ -58,7 +61,7 @@ const App = () => {
       {friends.map((friend, index) => (
         <div key={friend.name}>
           <Friend name={friend.name} age={friend.age} />
-          <button onClick={() => increaseAge(index)}>Increase {friend.name}'s age</button>
+          <button onClick={() => increaseAgeManually(index)}>Increase {friend.name}'s age</button>
           <button onClick={() => resetAge(index)}>Reset {friend.name}'s age</button>
         </div>
       ))}
